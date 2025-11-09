@@ -2,6 +2,7 @@ import { ComponentRef, Type } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { UrlTree } from '@angular/router';
+import { ConfirmDeleteModalComponent } from './shared/components/confirm-delete-modal/confirm-delete-modal';
 
 import {
   BaseLabel,
@@ -171,7 +172,8 @@ export type ModalInputs =
   | GifteeInfoModalInputs
   | MyWishlistModalInputs
   | PersonalInfoModalInputs
-  | InvitationModalInputs;
+  | InvitationModalInputs
+  | ConfirmDeleteModalInputs;
 
 export type ModalOutputs = Record<string, (...args: unknown[]) => void>;
 
@@ -181,6 +183,7 @@ export type ModalComponentType = Type<
   | PersonalInfoModal
   | InvitationModal
   | ParticipantInfoModal
+  | ConfirmDeleteModalComponent
 >;
 
 export interface GifteePersonalInfoItem {
@@ -206,6 +209,11 @@ export interface MyWishlistModalInputs {
 export interface PersonalInfoModalInputs {
   personalInfo: GifteePersonalInfoItem[];
 }
+
+export interface ConfirmDeleteModalInputs {
+  fullName: string;
+}
+
 export interface InvitationModalInputs {
   roomLink: string;
   invitationNote: string;

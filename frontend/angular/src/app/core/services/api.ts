@@ -97,4 +97,21 @@ export class ApiService {
       { params, observe: 'response' }
     );
   }
+
+  /**
+   * Removes a user from the room.
+   * @param userIdToDelete ID of the user.
+   * @param adminUserCode userCode of the administrator.
+   */
+  public deleteUser(
+    userIdToDelete: number | string,
+    adminUserCode: string
+  ): Observable<HttpResponse<any>> {
+    const params = new HttpParams().set('userCode', adminUserCode);
+
+    return this.#http.delete<any>(
+      `${this.#baseUrl}${Endpoint.users}/${userIdToDelete}`,
+      { params, observe: 'response' }
+    );
+  }
 }

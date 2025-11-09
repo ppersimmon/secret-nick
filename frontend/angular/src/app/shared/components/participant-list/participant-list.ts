@@ -1,7 +1,17 @@
-import { Component, computed, HostBinding, input } from '@angular/core';
+import {
+  Component,
+  computed,
+  HostBinding,
+  input,
+  Output,
+  EventEmitter,
+  inject,
+} from '@angular/core';
 import { User } from '../../../app.models';
 import { ParticipantCard } from '../participant-card/participant-card';
 import { toTimestamp } from '../../../utils/times';
+import { ModalService } from '../../../core/services/modal';
+import { ConfirmDeleteModalComponent } from '../confirm-delete-modal/confirm-delete-modal';
 
 @Component({
   selector: 'app-participant-list',
@@ -14,6 +24,9 @@ export class ParticipantList {
   public readonly maxParticipants = input<number>(20);
   public readonly isAdmin = input<boolean>(false);
   public readonly userCode = input<string>('');
+  public readonly isDrawn = input<boolean>(false);
+
+  @Output() deleteUser = new EventEmitter<number | string>();
 
   @HostBinding('class.non-admin-list')
   get adminClass(): boolean {
@@ -21,6 +34,12 @@ export class ParticipantList {
   }
 
   currentCount = computed(() => this.participants().length);
+
+  readonly #modalService = inject(ModalService);
+
+  public readonly currentUserId = computed(() => {
+    return this.participants().find((p) => p.userCode === this.userCode())?.id;
+  });
 
   sortedParticipants = computed(() => {
     return [...this.participants()].sort(
@@ -39,4 +58,23 @@ export class ParticipantList {
       }
     );
   });
+
+  public onDeleteClick(user: User): void {
+    this.#modalService.openWithResult(
+      ConfirmDeleteModalComponent,
+      { fullName: `${user.firstName} ${user.lastName}` },
+      {
+        buttonAction: () => {
+          this.deleteUser.emit(user.id);
+          this.#modalService.close();
+        },
+        cancelButtonAction: () => {
+          this.#modalService.close();
+        },
+        closeModal: () => {
+          this.#modalService.close();
+        },
+      }
+    );
+  }
 }

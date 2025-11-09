@@ -34,4 +34,13 @@
       (click)="onInfoClick()"
     />
   }
+
+  @if (isCurrentUserAdmin() && !isCurrentUser() && !isDrawn()) {
+    <app-icon-button
+      class="is-destructive"
+      [iconName]="iconDelete"
+      [ariaLabel]="ariaLabelDelete"
+      (click)="onDelete()"
+    />
+  }
 </span>

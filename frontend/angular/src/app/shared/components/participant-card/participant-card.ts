@@ -5,6 +5,7 @@ import {
   HostBinding,
   inject,
   input,
+  output,
 } from '@angular/core';
 import { tap } from 'rxjs';
 
@@ -40,6 +41,10 @@ export class ParticipantCard {
   readonly userCode = input<string>('');
   readonly showInfoIcon = input<boolean>(false);
 
+  readonly currentUserId = input<number | string | undefined>();
+  readonly isDrawn = input<boolean>(false);
+  readonly delete = output<void>();
+
   readonly #popup = inject(PopupService);
   readonly #urlService = inject(UrlService);
   readonly #host = inject(ElementRef<HTMLElement>);
@@ -58,6 +63,9 @@ export class ParticipantCard {
   public readonly ariaLabelCopy = AriaLabel.ParticipantLink;
   public readonly iconInfo = IconName.Info;
   public readonly ariaLabelInfo = AriaLabel.Info;
+
+  public readonly iconDelete = IconName.Delete;
+  public readonly ariaLabelDelete = AriaLabel.Delete;
 
   @HostBinding('tabindex') tab = 0;
   @HostBinding('class.list-row') rowClass = true;
@@ -119,6 +127,10 @@ export class ParticipantCard {
     if (target instanceof HTMLElement) {
       this.#popup.hide(target);
     }
+  }
+
+  public onDelete(): void {
+    this.delete.emit();
   }
 
   #openModal(): void {

@@ -1,5 +1,6 @@
 @use 'abstracts/mixins' as *;
 @use 'colors/color-matrix' as *;
+@use 'colors/color-palette' as *;
 
 :host {
   @include li-item;
@@ -39,6 +40,42 @@
       width: 1px;
       height: 40px;
       background-color: $pl-li-divider-color;
+    }
+  }
+
+  app-icon-button {
+    margin-left: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 40px;
+    height: 40px;
+
+    .button__icon {
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+  }
+
+  app-icon-button.is-destructive {
+    .button {
+      fill: $red-500;
+
+      &:hover,
+      &:focus-visible {
+        fill: $red-warning;
+      }
+
+      &:active {
+        fill: $red-600;
+      }
+
+      &:disabled {
+        fill: $g-400;
+        cursor: not-allowed;
+      }
     }
   }
 }

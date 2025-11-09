@@ -1,0 +1,16 @@
+<app-common-modal-template
+  [headerPictureName]="picture"
+  [headerTitle]="title()"
+  [subtitle]="''"
+  [buttonText]="okText"
+  [cancelButtonText]="cancelText"
+  (buttonAction)="onOk()"
+  (cancelButtonAction)="onCancel()"
+  (closeModal)="onClose()"
+>
+  <p class="modal__description">
+    Are you sure you want to remove the participant from this room? They will
+    permanently lose access and all their data will be deleted. This action
+    cannot be undone.
+  </p>
+</app-common-modal-template>

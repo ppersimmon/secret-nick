@@ -63,3 +63,33 @@ export const formatDate = (dateString?: string) => {
   };
   return date.toLocaleDateString("en-GB", options);
 };
+
+type ErrorResponse = {
+  errors: { errorMessage: string }[];
+};
+
+export async function deleteUser(
+  userIdToDelete: number,
+  adminUserCode: string,
+) {
+  const url = `${BASE_API_URL}/api/users/${userIdToDelete}?userCode=${adminUserCode}`;
+
+  const response = await fetch(url, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    try {
+      const errorData: ErrorResponse = await response.json();
+      const message =
+        errorData?.errors[0]?.errorMessage || "Failed to delete user";
+      throw new Error(message);
+    } catch {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+  }
+  return true;
+}

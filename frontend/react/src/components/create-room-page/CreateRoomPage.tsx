@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router";
 
 import {
@@ -19,33 +19,42 @@ const CreateRoomPage = () => {
   const { showToast } = useToaster();
   const navigate = useNavigate();
 
-  const { isLoading, fetchData } = useFetch<
-    CreateRoomResponse,
-    CreateRoomRequest
-  >(
-    {
+  const handleFetchError = useCallback(() => {
+    showToast("Something went wrong. Try again.", "error", "large");
+  }, [showToast]);
+
+  const handleFetchSuccess = useCallback(
+    (response: CreateRoomResponse) => {
+      setRoomData(defaultRoomData);
+      navigate("/create-room/success", {
+        state: {
+          roomAndUserData: {
+            invitationCode: response?.room?.invitationCode,
+            invitationNote: response?.room?.invitationNote,
+            userCode: response?.userCode,
+            roomName: response?.room?.name,
+          },
+        },
+      });
+    },
+    [navigate, setRoomData],
+  );
+
+  const fetchOptions = useMemo(
+    () => ({
       url: `${BASE_API_URL}/api/rooms`,
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      onError: () => {
-        showToast("Something went wrong. Try again.", "error", "large");
-      },
-      onSuccess: (response: CreateRoomResponse) => {
-        setRoomData(defaultRoomData);
-        navigate("/create-room/success", {
-          state: {
-            roomAndUserData: {
-              invitationCode: response?.room?.invitationCode,
-              invitationNote: response?.room?.invitationNote,
-              userCode: response?.userCode,
-              roomName: response?.room?.name,
-            },
-          },
-        });
-      },
-    },
-    false,
+      onError: handleFetchError,
+      onSuccess: handleFetchSuccess,
+    }),
+    [handleFetchError, handleFetchSuccess],
   );
+
+  const { isLoading, fetchData } = useFetch<
+    CreateRoomResponse,
+    CreateRoomRequest
+  >(fetchOptions, false);
 
   const handleCreateRoom = () => {
     const formData = getCreateRoomData();

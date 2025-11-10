@@ -44,7 +44,7 @@ const RoomDetails = ({
           <InfoCard title="Invitation Note" iconName="note" variant="white">
             <Button
               size="small"
-              variant="secondary"
+              variant="tertiary"
               onClick={() => setIsModalOpen(true)}
             >
               Invite New Members

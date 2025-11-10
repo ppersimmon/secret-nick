@@ -1,8 +1,8 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import type { FetchParams, UseFetchReturn } from "./types";
 
 export function useFetch<T = unknown, N = undefined>(
-  { url, onSuccess, onError, ...options }: FetchParams<T>,
+  fetchParams: FetchParams<T>,
   immediate: boolean = true,
 ): UseFetchReturn<T, N> {
   const [data, setData] = useState<T | null>(null);
@@ -11,10 +11,17 @@ export function useFetch<T = unknown, N = undefined>(
 
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  const fetchData = async (data?: N) => {
+  const paramsRef = useRef(fetchParams);
+  useEffect(() => {
+    paramsRef.current = fetchParams;
+  }, [fetchParams]);
+
+  const fetchData = useCallback(async (bodyData?: N) => {
     abortControllerRef.current?.abort();
     const controller = new AbortController();
     abortControllerRef.current = controller;
+
+    const { url, onSuccess, onError, body, ...options } = paramsRef.current;
 
     setIsLoading(true);
     setIsError(false);
@@ -22,7 +29,7 @@ export function useFetch<T = unknown, N = undefined>(
     try {
       const response = await fetch(url, {
         ...options,
-        body: JSON.stringify(data),
+        body: bodyData ? JSON.stringify(bodyData) : body,
         signal: controller.signal,
       });
 
@@ -30,35 +37,29 @@ export function useFetch<T = unknown, N = undefined>(
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      const result: T = await response.json();
-      setData(result);
+      const text = await response.text();
+      const result: T = text ? JSON.parse(text) : null;
 
-      if (onSuccess) {
-        onSuccess(result);
-      }
+      setData(result);
+      onSuccess?.(result);
     } catch (error) {
       if ((error as Error).name !== "AbortError") {
         setIsError(true);
-      }
-
-      if (onError) {
-        onError(error as Error);
+        onError?.(error as Error);
       }
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (immediate) {
       fetchData();
     }
-
     return () => {
       abortControllerRef.current?.abort();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [immediate]);
+  }, [immediate, fetchData]);
 
   return { data, isLoading, isError, fetchData };
 }

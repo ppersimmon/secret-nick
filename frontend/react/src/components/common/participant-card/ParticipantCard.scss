@@ -26,3 +26,19 @@
   @extend %label;
   color: colors.$g-800;
 }
+
+.is-destructive {
+  svg {
+    fill: colors.$green-500;
+    transition: fill 150ms ease-in-out;
+  }
+
+  &:hover,
+  &:focus {
+    svg {
+      fill: colors.$green-400;
+      width: 24px;
+      height: 24px;
+    }
+  }
+}

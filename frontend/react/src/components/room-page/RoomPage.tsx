@@ -79,6 +79,8 @@ const RoomPage = () => {
     return null;
   }
 
+  const isDrawHappened = !!roomDetails?.closedOn;
+
   return (
     <main className="room-page">
       {isLoading ? <Loader /> : null}
@@ -87,6 +89,8 @@ const RoomPage = () => {
         participants={participants ?? []}
         roomDetails={roomDetails ?? ({} as GetRoomResponse)}
         onDrawNames={() => fetchRandomize()}
+        onUserDeleted={fetchParticipants}
+        isDrawHappened={isDrawHappened}
       />
     </main>
   );

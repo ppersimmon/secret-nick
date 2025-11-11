@@ -29,6 +29,8 @@
       [isAdmin]="isAdmin()"
       [userCode]="userCode()"
       [maxParticipants]="20"
+      [isDrawn]="isRoomDrawn()"
+      (deleteUser)="onUserDelete($event)"
     />
   </section>
 

@@ -14,6 +14,9 @@
       [showCopyIcon]="isAdmin() && !!userCode()"
       [userCode]="userCode()"
       [isCurrentUserAdmin]="isAdmin()"
+      [currentUserId]="currentUserId()"
+      [isDrawn]="isDrawn()"
+      (delete)="onDeleteClick(p)"
     ></li>
   }
 </ul>

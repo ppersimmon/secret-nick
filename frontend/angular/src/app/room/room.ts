@@ -181,6 +181,10 @@ export class Room implements OnInit {
     );
   }
 
+  public onUserDelete(userId: number | string): void {
+    this.#userService.removeUser(userId);
+  }
+
   #getGifteeName(): string {
     const gifteeId = this.#userService.currentUser()?.giftToUserId || 0;
     const gifteeUser = this.users().find((user) => user.id === gifteeId);

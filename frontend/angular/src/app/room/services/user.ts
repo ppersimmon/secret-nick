@@ -1,5 +1,5 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, catchError, EMPTY } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
 
 import { ApiService } from '../../core/services/api';
@@ -56,5 +56,39 @@ export class UserService {
         }
       })
     );
+  }
+
+  public removeUser(userIdToDelete: number | string): void {
+    const adminUserCode = this.userCode();
+    if (!adminUserCode) {
+      this.#toasterService.show(
+        ToastMessage.AdminUserCodeMissing,
+        MessageType.Error
+      );
+      return;
+    }
+
+    this.#apiService
+      .deleteUser(userIdToDelete, adminUserCode)
+      .pipe(
+        tap(({ status }) => {
+          if (status === 200) {
+            this.#users.update((currentUsers) =>
+              currentUsers.filter((user) => user.id !== userIdToDelete)
+            );
+            this.#toasterService.show(
+              ToastMessage.SuccessDeleteUser,
+              MessageType.Success
+            );
+          }
+        }),
+        catchError((err: any) => {
+          const errorMsg =
+            err.error?.errors[0]?.ErrorMessage || 'Failed to delete user';
+          this.#toasterService.show(errorMsg, MessageType.Error);
+          return EMPTY;
+        })
+      )
+      .subscribe();
   }
 }

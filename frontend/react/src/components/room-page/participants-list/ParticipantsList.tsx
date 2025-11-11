@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useParams } from "react-router";
 import ParticipantCard from "@components/common/participant-card/ParticipantCard";
 import ParticipantDetailsModal from "@components/common/modals/participant-details-modal/ParticipantDetailsModal";
+import ConfirmDeleteModal from "@components/common/modals/confirm-delete-modal/ConfirmDeleteModal";
 import type { Participant } from "@types/api";
 import {
   MAX_PARTICIPANTS_NUMBER,
@@ -9,11 +10,21 @@ import {
 } from "@utils/general";
 import { type ParticipantsListProps, type PersonalInformation } from "./types";
 import "./ParticipantsList.scss";
+import useToaster from "@hooks/useToaster";
+import { deleteUser } from "@utils/general";
 
-const ParticipantsList = ({ participants }: ParticipantsListProps) => {
+const ParticipantsList = ({
+  participants,
+  onUserDeleted,
+  isDrawHappened,
+}: ParticipantsListProps) => {
   const { userCode } = useParams();
+  const { showToast } = useToaster();
   const [selectedParticipant, setSelectedParticipant] =
     useState<PersonalInformation | null>(null);
+
+  const [participantToDelete, setParticipantToDelete] =
+    useState<Participant | null>(null);
 
   const admin = participants?.find((participant) => participant?.isAdmin);
   const restParticipants = participants?.filter(
@@ -35,6 +46,27 @@ const ParticipantsList = ({ participants }: ParticipantsListProps) => {
   };
 
   const handleModalClose = () => setSelectedParticipant(null);
+  const handleDeleteClick = (user: Participant) => {
+    setParticipantToDelete(user);
+  };
+
+  const handleModalDeleteClose = () => {
+    setParticipantToDelete(null);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!participantToDelete || !admin?.userCode) return;
+
+    try {
+      await deleteUser(participantToDelete.id, admin.userCode);
+      showToast("Participant successfully removed.", "success", "large");
+      onUserDeleted();
+      handleModalDeleteClose();
+    } catch (error) {
+      showToast((error as Error).message, "error", "large");
+      handleModalDeleteClose();
+    }
+  };
 
   return (
     <div
@@ -82,6 +114,13 @@ const ParticipantsList = ({ participants }: ParticipantsListProps) => {
                   ? () => handleInfoButtonClick(user)
                   : undefined
               }
+              onDeleteButtonClick={
+                userCode === admin?.userCode &&
+                userCode !== user?.userCode &&
+                !isDrawHappened
+                  ? () => handleDeleteClick(user)
+                  : undefined
+              }
             />
           ))}
         </div>
@@ -91,6 +130,15 @@ const ParticipantsList = ({ participants }: ParticipantsListProps) => {
             isOpen={!!selectedParticipant}
             onClose={handleModalClose}
             personalInfoData={selectedParticipant}
+          />
+        ) : null}
+
+        {participantToDelete ? (
+          <ConfirmDeleteModal
+            isOpen={!!participantToDelete}
+            onClose={handleModalDeleteClose}
+            onConfirmDelete={handleConfirmDelete}
+            userName={`${participantToDelete.firstName} ${participantToDelete.lastName}`}
           />
         ) : null}
       </div>

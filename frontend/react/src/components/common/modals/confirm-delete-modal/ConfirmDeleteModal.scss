@@ -1,0 +1,73 @@
+@use "@assets/styles/_colors" as colors;
+@use "@assets/styles/variables" as var;
+
+.confirm-delete-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 792px;
+  padding: 36px;
+  background: colors.$g-50;
+  border-radius: 16px;
+  border: 1px solid colors.$g-500;
+  box-shadow: var.$shadow;
+  position: relative;
+
+  .modal__header {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+
+    .modal__picture {
+      fill: colors.$red-500;
+      width: 74px;
+      height: 74px;
+      flex-shrink: 0;
+    }
+
+    .modal__title {
+      font-size: 24px;
+      line-height: 1.2;
+      color: colors.$red-500;
+      font-weight: 700;
+    }
+  }
+
+  .modal__close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+
+    svg {
+      fill: colors.$g-400;
+    }
+  }
+
+  .modal__description {
+    color: colors.$g-700;
+    line-height: 1.4;
+    font-size: 14px;
+    margin-top: -10px;
+  }
+
+  .modal__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+
+    button {
+      width: auto;
+      padding: 0 32px;
+    }
+
+    .button--primary {
+      background-color: colors.$red-500;
+      border-color: colors.$red-500;
+
+      &:hover {
+        background-color: colors.$red-warning;
+        border-color: colors.$red-warning;
+      }
+    }
+  }
+}

@@ -19,6 +19,7 @@ export const enum IconName {
   Close = 'close',
   Link = 'link',
   Info = 'info',
+  Delete = 'delete',
 }
 
 export const enum AriaLabel {
@@ -31,6 +32,7 @@ export const enum AriaLabel {
   Close = 'Close',
   ParticipantLink = 'Copy personal link',
   Info = 'Info',
+  Delete = 'Delete participant',
 }
 
 export const enum InputSidebarText {
@@ -120,6 +122,8 @@ export enum ToastMessage {
   PleaseCreateYourRoom = 'Please create your room first.',
   PleaseJoinTheRoom = 'Please join the room first',
   SuccessDrawNames = 'Success! All participants are matched.\nLet the gifting magic start!',
+  SuccessDeleteUser = 'The participant has been successfully removed.',
+  AdminUserCodeMissing = 'Admin user code is missing.',
 }
 
 export const enum InputType {
@@ -183,6 +187,7 @@ export const enum PictureName {
   BigGifts = 'big-gifts',
   StNick = 'st-nick',
   Cookie = 'cookie',
+  Gift = 'gift',
   Invitation = 'invitation',
 }
 
@@ -292,6 +297,7 @@ export const enum ModalTitle {
   ParticipantDetails = 'Participant Details',
   PersonalInformation = 'Personal Information',
   Invitation = 'Invite New Members',
+  ConfirmDeletion = 'Confirm deletion',
 }
 
 export const enum ModalSubtitle {

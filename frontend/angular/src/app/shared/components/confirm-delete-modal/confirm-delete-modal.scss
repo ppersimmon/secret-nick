@@ -1,0 +1,34 @@
+@use 'colors/color-palette' as *;
+@use 'colors/color-matrix' as *;
+
+:host ::ng-deep {
+  .modal__header {
+    .modal__picture {
+      fill: $red-500;
+    }
+
+    .modal__title {
+      color: $red-500;
+    }
+  }
+
+  .modal__actions {
+    app-button.primary.medium {
+      ::ng-deep .btn {
+        background-color: $red-500;
+        border-color: $red-500;
+        color: $g-50;
+
+        &:hover {
+          background-color: $red-warning;
+          border-color: $red-warning;
+        }
+
+        &:active {
+          background-color: $red-600;
+          border-color: $red-600;
+        }
+      }
+    }
+  }
+}

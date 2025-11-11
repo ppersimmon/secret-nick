@@ -6,6 +6,6 @@
     "outDir": "./out-tsc/app",
     "types": []
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "src/app/shared/components/confirm-delete-modal"],
   "exclude": ["src/**/*.spec.ts"]
 }
